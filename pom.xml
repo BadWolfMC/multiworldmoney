@@ -62,7 +62,7 @@
 		</dependency>
 		<!-- Multiverse -->
 		<dependency>
-			<groupId>com.github.multiverse</groupId>
+			<groupId>com.github.Multiverse</groupId>
 			<artifactId>Multiverse-Core</artifactId>
 			<version>4.3.12</version>
 			<scope>provided</scope>
