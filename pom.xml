@@ -41,7 +41,7 @@
 		</repository>
 		<repository>
 			<id>onarandombox</id>
-			<url>http://repo.onarandombox.com/content/groups/public</url>
+			<url>https://repo.onarandombox.com/content/groups/public</url>
 		</repository>
 	</repositories>
 
@@ -62,9 +62,9 @@
 		</dependency>
 		<!-- Multiverse -->
 		<dependency>
-			<groupId>com.onarandombox.multiversecore</groupId>
+			<groupId>com.github.multiverse</groupId>
 			<artifactId>Multiverse-Core</artifactId>
-			<version>4.3.1</version>
+			<version>4.3.12</version>
 			<scope>provided</scope>
 			<exclusions>
 				<exclusion>
