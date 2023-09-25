@@ -62,7 +62,7 @@
 		</dependency>
 		<!-- Multiverse -->
 		<dependency>
-			<groupId>com.github.Multiverse</groupId>
+			<groupId>com.github.multiversecore</groupId>
 			<artifactId>Multiverse-Core</artifactId>
 			<version>4.3.12</version>
 			<scope>provided</scope>
@@ -78,10 +78,6 @@
 				<exclusion>
 					<groupId>org.mcstats.bukkit</groupId>
 					<artifactId>metrics</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>io.papermc.paper</groupId>
-					<artifactId>paper-api</artifactId>
 				</exclusion>
 			</exclusions>
 		</dependency>
