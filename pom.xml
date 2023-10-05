@@ -50,7 +50,7 @@
 		<dependency>
                         <groupId>io.papermc.paper</groupId>
                         <artifactId>paper-api</artifactId>
-                        <version>1.20.1-R0.1-SNAPSHOT</version>
+                        <version>1.20.1-R0.2-SNAPSHOT</version>
                         <scope>provided</scope>
 		</dependency>
 		<!-- Vault -->
@@ -63,8 +63,8 @@
 		<!-- Multiverse -->
 		<dependency>
 			<groupId>com.github.multiversecore</groupId>
-			<artifactId>Multiverse-Core</artifactId>
-			<version>4.3.12-pre</version>
+			<artifactId>multiverse-core</artifactId>
+			<version>4.3.12</version>
 			<scope>provided</scope>
 			<exclusions>
 				<exclusion>
