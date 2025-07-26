@@ -10,9 +10,9 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import org.mvplugins.multiverse.core.api.MultiverseCoreApi;
-import org.mvplugins.multiverse.core.api.MultiverseWorld;
-import org.mvplugins.multiverse.core.api.WorldManager;
+import org.mvplugins.multiverse.core.MultiverseCoreApi;
+import org.mvplugins.multiverse.core.MultiverseWorld;
+import org.mvplugins.multiverse.core.WorldManager;
 
 import net.milkbowl.vault.economy.EconomyResponse;
 
