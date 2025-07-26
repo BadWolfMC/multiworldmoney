@@ -21,8 +21,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import com.onarandombox.MultiverseCore.MultiverseCore;
-import com.onarandombox.MultiverseCore.api.MultiverseWorld;
+import org.mvplugins.multiverse.core.MultiverseCore;
+import org.mvplugins.multiverse.core.api.MultiverseWorld;
 
 public class MultiWorldMoney extends JavaPlugin {
 
@@ -81,7 +81,7 @@ public class MultiWorldMoney extends JavaPlugin {
                                     if (!key.equalsIgnoreCase("offline_world") && !key.equalsIgnoreCase("playerinfo")) {
                                         World world = getServer().getWorld(key);
                                         if (world == null && core != null) {
-                                            MultiverseWorld mvWorld = core.getMVWorldManager().getMVWorld(key);
+                                            MultiverseWorld mvWorld = core.getWorldManager().getMVWorld(key);
                                             if (mvWorld != null) {
                                                 world = mvWorld.getCBWorld();
                                             }
@@ -299,7 +299,7 @@ public class MultiWorldMoney extends JavaPlugin {
         // Grab the Multiverse world name if it is available
         if (core != null) {
             try {
-                return core.getMVWorldManager().getMVWorld(world).getAlias();
+                return core.getWorldManager().getMVWorld(world).getAlias();
             } catch (Exception e) {
                 // do nothing if it does not work
                 e.printStackTrace();

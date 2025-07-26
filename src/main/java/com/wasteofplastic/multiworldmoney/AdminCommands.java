@@ -10,7 +10,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import com.onarandombox.MultiverseCore.api.MultiverseWorld;
+import org.mvplugins.multiverse.core.api.MultiverseWorld;
 
 import net.milkbowl.vault.economy.EconomyResponse;
 
@@ -69,7 +69,7 @@ class AdminCommands implements CommandExecutor {
             if (world == null) {
                 // Try MV
                 if (plugin.getCore() != null) {
-                    MultiverseWorld mvWorld = plugin.getCore().getMVWorldManager().getMVWorld(args[3]);
+                    MultiverseWorld mvWorld = plugin.getCore().getWorldManager().getMVWorld(args[3]);
                     if (mvWorld == null) {
                         sender.sendMessage(ChatColor.RED + Lang.error + " " + ChatColor.DARK_RED + Lang.unknownWorld);
                         return true;
