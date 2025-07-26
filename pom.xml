@@ -62,7 +62,7 @@
 		</dependency>
 		<!-- Multiverse -->
 		<dependency>
-			<groupId>com.github.multiversecore</groupId>
+			<groupId>org.mvplugins.multiverse.core</groupId>
 			<artifactId>multiverse-core</artifactId>
 			<version>5.1.2</version>
 			<scope>provided</scope>
