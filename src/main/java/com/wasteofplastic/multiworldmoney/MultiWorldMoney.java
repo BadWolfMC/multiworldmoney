@@ -22,15 +22,12 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import org.mvplugins.multiverse.core.MultiverseCoreApi;
-import org.mvplugins.multiverse.core.MultiverseWorld;
-import org.mvplugins.multiverse.core.WorldManager;
 
 public class MultiWorldMoney extends JavaPlugin {
 
     private final HashMap<String,List<World>> worldGroups = new HashMap<>();
     private final HashMap<World,String> reverseWorldGroups = new HashMap<>();
     private PlayerCache players;
-    private MultiverseCore core;
     private VaultHelper vh;
     private Settings settings;
 
@@ -45,9 +42,6 @@ public class MultiWorldMoney extends JavaPlugin {
 
         // Load MVCore if it is available
         core = (MultiverseCore) this.getServer().getPluginManager().getPlugin("Multiverse-Core");
-        if (core != null) {
-            getLogger().info("Multiverse-Core found.");
-        } else {
             getLogger().info("Multiverse-Core not found.");
         }
         // Check if this is an upgrade
@@ -82,7 +76,7 @@ public class MultiWorldMoney extends JavaPlugin {
                                     if (!key.equalsIgnoreCase("offline_world") && !key.equalsIgnoreCase("playerinfo")) {
                                         World world = getServer().getWorld(key);
                                         if (world == null && core != null) {
-                                            MultiverseWorld mvWorld = core.getWorldManager().getMVWorld(key);
+                                            MultiverseWorld mvWorld = MultiverseCoreApi.get().getWorldManager().getWorld(key);
                                             if (mvWorld != null) {
                                                 world = mvWorld.getCBWorld();
                                             }
@@ -298,10 +292,6 @@ public class MultiWorldMoney extends JavaPlugin {
      */
     public String getWorldName(World world) {
         // Grab the Multiverse world name if it is available
-        if (core != null) {
-            try {
-                return core.getWorldManager().getMVWorld(world).getAlias();
-            } catch (Exception e) {
                 // do nothing if it does not work
                 e.printStackTrace();
             }
@@ -314,9 +304,6 @@ public class MultiWorldMoney extends JavaPlugin {
     /**
      * @return the core
      */
-    public MultiverseCore getCore() {
-        return core;
-    }
 
 
     /**

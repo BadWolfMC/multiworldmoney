@@ -11,8 +11,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import org.mvplugins.multiverse.core.MultiverseCoreApi;
-import org.mvplugins.multiverse.core.MultiverseWorld;
-import org.mvplugins.multiverse.core.WorldManager;
 
 import net.milkbowl.vault.economy.EconomyResponse;
 
@@ -70,8 +68,8 @@ class AdminCommands implements CommandExecutor {
             World world = plugin.getServer().getWorld(args[3]);
             if (world == null) {
                 // Try MV
-                if (plugin.getCore() != null) {
-                    MultiverseWorld mvWorld = plugin.getCore().getWorldManager().getMVWorld(args[3]);
+                
+                    MultiverseWorld mvWorld = MultiverseCoreApi.get().getWorldManager().getWorld(args[3]);
                     if (mvWorld == null) {
                         sender.sendMessage(ChatColor.RED + Lang.error + " " + ChatColor.DARK_RED + Lang.unknownWorld);
                         return true;
