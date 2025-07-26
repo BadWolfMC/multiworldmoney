@@ -21,8 +21,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import org.mvplugins.multiverse.core.MultiverseCore;
+import org.mvplugins.multiverse.core.api.MultiverseCoreApi;
 import org.mvplugins.multiverse.core.api.MultiverseWorld;
+import org.mvplugins.multiverse.core.api.WorldManager;
 
 public class MultiWorldMoney extends JavaPlugin {
 
