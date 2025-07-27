@@ -40,7 +40,6 @@ public class MultiWorldMoney extends JavaPlugin {
         // Load cache
         players = new PlayerCache(this);
 
-        }
         // Check if this is an upgrade
         File userDataFolder = new File(getDataFolder(),"userdata");
         if (userDataFolder.exists()) {
