@@ -40,9 +40,6 @@ public class MultiWorldMoney extends JavaPlugin {
         // Load cache
         players = new PlayerCache(this);
 
-        // Load MVCore if it is available
-        core = (MultiverseCore) this.getServer().getPluginManager().getPlugin("Multiverse-Core");
-            getLogger().info("Multiverse-Core not found.");
         }
         // Check if this is an upgrade
         File userDataFolder = new File(getDataFolder(),"userdata");
@@ -286,7 +283,6 @@ public class MultiWorldMoney extends JavaPlugin {
     }
 
     /**
-     * Returns the name of world, uses MultiverseCore alias if available
      * @param world - world
      * @return world name or alias
      */
