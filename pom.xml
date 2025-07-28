@@ -45,6 +45,23 @@
 		</repository>
 	</repositories>
 
+	<dependencyManagement>
+    	<dependencies>
+        	<dependency>
+            	<groupId>com.github.multiversecore</groupId>
+            	<artifactId>multiverse-core</artifactId>
+            	<version>9999.0.0-IGNORED</version>
+            	<scope>provided</scope>
+            	<exclusions>
+                	<exclusion>
+                    	<groupId>*</groupId>
+                    	<artifactId>*</artifactId>
+                	</exclusion>
+            	</exclusions>
+        	</dependency>
+    	</dependencies>
+	</dependencyManagement>
+
 	<dependencies>
 		<!-- Spigot API -->
 		<dependency>
