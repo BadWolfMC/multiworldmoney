@@ -1,8 +1,6 @@
 package com.wasteofplastic.multiworldmoney;
 
-import java.util.List;
-import java.util.UUID;
-
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.World;
 import org.bukkit.command.Command;
@@ -10,127 +8,77 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import net.milkbowl.vault.economy.EconomyResponse;
+import java.util.UUID;
 
-class PayCommand implements CommandExecutor {
-
+public class PayCommand implements CommandExecutor {
     private final MultiWorldMoney plugin;
 
-    /**
-     * @param plugin - plugin
-     */
     public PayCommand(MultiWorldMoney plugin) {
         this.plugin = plugin;
     }
 
-
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (!(sender instanceof Player)) {
-            sender.sendMessage("Error: /pay is only available in game.");
+            sender.sendMessage("This command can only be run by a player.");
             return true;
         }
-        Player player = (Player)sender;
-        if (plugin.getVh().checkPerm(player, "mwm.pay")) {
-            player.sendMessage(ChatColor.RED + Lang.error + " " + ChatColor.DARK_RED + Lang.noPermission);
-            return true;
-        }
-        if (args.length == 2) {
-            // correctly formed pay command /pay name amount
-            // Check name
-            UUID targetUUID = plugin.getPlayers().getUUID(args[0]);
 
-            if (targetUUID != null) {
-                if (targetUUID.equals(player.getUniqueId())) {
-                    player.sendMessage(ChatColor.RED + Lang.error + " " + ChatColor.DARK_RED + Lang.youCannotPayYourself);
-                    return true;
-                }
-                double amount;
-                // Check that the amount is a number
-                try {
-                    amount = Double.valueOf(args[1]); // May throw NumberFormatException
-                } catch (Exception ex) {
-                    // Failure on the number
-                    player.sendMessage(Lang.payHelp);
-                    player.sendMessage("/pay " + Lang.playerHelp + " " + Lang.amountHelp);
-                    return true;
-                }
-                if (amount < 0D) {
-                    player.sendMessage(ChatColor.RED + Lang.error + " " + ChatColor.DARK_RED + Lang.amountPositive);
-                    return true;
-                }
-                // Check if online or offline
-                Player target = plugin.getServer().getPlayer(targetUUID);
-                if (target != null) {
-                    // online player
-                    // Check worlds
-                    if (!target.getWorld().equals(player.getWorld())) {
-                        // Not same world
-                        // Check if worlds are in the same group
-                        List<World> groupWorlds = plugin.getGroupWorlds(target.getWorld());
-                        //plugin.getLogger().info("DEBUG: from group worlds = " + groupWorlds);
-                        if (!groupWorlds.contains(player.getWorld())) {
-                            // They are not in the same group
-                            // Try to withdraw the amount
-                            EconomyResponse er = plugin.getVh().getEcon().withdrawPlayer(player, amount);
-                            if (er.transactionSuccess()) {
-                                // Set the balance in the sender's world
-                                plugin.getPlayers().deposit(target, player.getWorld(), amount);
-                                sender.sendMessage(ChatColor.GREEN + ((Lang.sendTo
-                                        .replace("[name]", target.getName()))
-                                        .replace("[amount]", plugin.getVh().getEcon().format(amount)))
-                                        .replace("[world]", player.getWorld().getName()));
-                                target.sendMessage(ChatColor.GREEN + (Lang.receiveFrom
-                                        .replace("[name]", sender.getName())
-                                        .replace("[amount]", plugin.getVh().getEcon().format(amount)))
-                                        .replace("[world]", player.getWorld().getName()));
-                                // Override the payment
-                                return true;
-                            } else {
-                                // Cannot pay - let pay handle the error
-                                sender.sendMessage(ChatColor.RED + Lang.error + " " + ChatColor.DARK_RED + Lang.insufficientFunds);
-                                return true;
-                            }
-                        } else {
-                            // else allow the payment
-                            pay(target, player, amount);
-                            return true;
-                        }
-                    }
-                    // Same world - allow the transfer
-                    pay(target, player, amount);
-                    return true;
-                } else {
-                    // Offline player - not supported
-                    sender.sendMessage(ChatColor.RED + Lang.error + " " + ChatColor.DARK_RED + Lang.noPlayer);
-                    return true;
-                }
-            } else {
-                sender.sendMessage(ChatColor.RED + Lang.error + " " + ChatColor.DARK_RED + Lang.noPlayer);
-                return true;
-            }
+        if (args.length != 2) {
+            sender.sendMessage(ChatColor.RED + "Usage: /pay <player> <amount>");
+            return true;
         }
-        player.sendMessage(Lang.payHelp);
-        player.sendMessage("/pay " + Lang.playerHelp + " " + Lang.amountHelp);
+
+        Player payer = (Player) sender;
+        Player payee = Bukkit.getPlayer(args[0]);
+        double amount;
+
+        try {
+            amount = Double.parseDouble(args[1]);
+        } catch (NumberFormatException e) {
+            payer.sendMessage(ChatColor.RED + "Invalid amount: " + args[1]);
+            return true;
+        }
+
+        // Round to 2 decimal places
+        amount = plugin.roundToTwoDecimals(amount);
+
+        if (amount <= 0) {
+            payer.sendMessage(ChatColor.RED + "Amount must be positive.");
+            return true;
+        }
+
+        if (payee == null || !payee.isOnline()) {
+            payer.sendMessage(ChatColor.RED + "Player not found or not online: " + args[0]);
+            return true;
+        }
+
+        UUID payerUUID = payer.getUniqueId();
+        UUID payeeUUID = payee.getUniqueId();
+        World payerWorld = payer.getWorld();
+        World payeeWorld = payee.getWorld();
+
+        // Ensure both players are in the same group
+        String payerGroup = plugin.getSettings().getWorldGroup(payerWorld);
+        String payeeGroup = plugin.getSettings().getWorldGroup(payeeWorld);
+
+        if (payerGroup == null || payeeGroup == null || !payerGroup.equalsIgnoreCase(payeeGroup)) {
+            payer.sendMessage(ChatColor.RED + "You can only pay players in your current world group.");
+            return true;
+        }
+
+        double balance = plugin.getVh().getBalance(payerUUID, payerWorld);
+        if (balance < amount) {
+            payer.sendMessage(ChatColor.RED + "You don't have enough money to send that amount.");
+            return true;
+        }
+
+        plugin.getVh().withdraw(payerUUID, payerWorld, amount);
+        plugin.getVh().deposit(payeeUUID, payeeWorld, amount);
+
+        payer.sendMessage(ChatColor.GREEN + "You paid $" + amount + " to " + payee.getName());
+        payee.sendMessage(ChatColor.GREEN + "You received $" + amount + " from " + payer.getName());
+
         return true;
-    }
-
-
-    private void pay(Player target, Player player, double amount) {
-        EconomyResponse erw = plugin.getVh().getEcon().withdrawPlayer(player, amount);
-        if (erw.transactionSuccess()) {
-            plugin.getVh().getEcon().depositPlayer(target, amount);
-            player.sendMessage(ChatColor.GREEN + ((Lang.sendTo
-                    .replace("[name]", target.getName()))
-                    .replace("[amount]", plugin.getVh().getEcon().format(amount)))
-                    .replace("[world]", player.getWorld().getName()));
-            target.sendMessage(ChatColor.GREEN + (Lang.receiveFrom
-                    .replace("[name]", player.getName())
-                    .replace("[amount]", plugin.getVh().getEcon().format(amount)))
-                    .replace("[world]", player.getWorld().getName()));
-        } else {
-            // Cannot pay - let pay handle the error
-            player.sendMessage(ChatColor.RED + Lang.error + " " + ChatColor.DARK_RED + Lang.insufficientFunds);
-        }
     }
 }
